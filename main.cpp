@@ -156,7 +156,7 @@ int main() {
 	Logger::address ("engine_client.so:\t", pEngine);
 
 	void* foundGlowPointerCall = client.find(csgo,
-		"\xE8\x00\x00\x00\x00\x48\x8b\x10\x48\xc1\xe3\x06\x44",
+		"\xE8\x00\x00\x00\x00\x48\x8b\x10\x49\xc1\xe5\x06\x46", // 2016-10-08
 		"x????xxxxxxxx");
 
 	unsigned long call = csgo.GetCallAddress(foundGlowPointerCall);
