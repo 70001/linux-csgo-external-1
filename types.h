@@ -1,5 +1,7 @@
-struct Vector
-{
+#ifndef __TYPES_H_
+#define __TYPES_H_
+
+struct Vector {
 	float x;
 	float y;
 	float z;
@@ -13,8 +15,7 @@ struct Vector2D {
 	float x, y;
 };
 
-struct QAngle
-{
+struct QAngle {
 	float x; // Pitch
 	float y; // Yaw
 	float z; // Roll
@@ -57,3 +58,5 @@ struct Entity {
 	QAngle m_angNetworkAngles; // 0x158
 	Vector m_vecNetworkOrigin; // 0x164
 };
+
+#endif
