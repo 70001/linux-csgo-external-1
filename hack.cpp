@@ -119,7 +119,7 @@ void hack::Glow(double colors[12], remote::Handle* csgo, remote::MapModuleMemory
 					}
 				}
 
-				csgo->Write((void*) ((unsigned long) g_glow[i].m_pEntity + 0xEC5), &spotted, sizeof(unsigned char));
+				csgo->Write((void*) ((unsigned long) g_glow[i].m_pEntity + 0xECD), &spotted, sizeof(unsigned char));
 
 				if (g_glow[i].m_bRenderWhenOccluded == 1)
 					continue;
