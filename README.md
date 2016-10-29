@@ -39,6 +39,7 @@ bind yourkey +alt1
 - Xubuntu
 - Archlinux
 - Debian (Jessie + Sid)
+- Gentoo
 
 ## Known Bugs
 * Trigger doesn't work at far distance
