@@ -156,22 +156,25 @@ int main() {
 	Logger::address ("engine_client.so:\t", pEngine);
 
 	void* foundGlowPointerCall = client.find(csgo,
-		"\xE8\x00\x00\x00\x00\x48\x8b\x10\x49\xc1\xe5\x06\x46", // 2016-10-08
-		"x????xxxxxxxx");
+		"\xE8\x00\x00\x00\x00\x48\x8b\x3d\x00\x00\x00\x00\xBE\x01\x00\x00\x00\xC7", // 2016-10-08
+		"x????xxx????xxxxxx");
 
-	unsigned long call = csgo.GetCallAddress(foundGlowPointerCall);
+	unsigned long glowFunctionCall = csgo.GetCallAddress(foundGlowPointerCall);
+	Logger::address ("Glow function call:\t", glowFunctionCall);
 
-
-	Logger::address ("Glow function:\t", call);
-
-	csgo.m_addressOfGlowPointer = csgo.GetCallAddress((void*)(call+0xF));
-	Logger::address ("Glow array pointer:\t", csgo.m_addressOfGlowPointer);
+	int addressOfGlowPointerOffset;
+	csgo.Read((void*) (glowFunctionCall + 0x10), &addressOfGlowPointerOffset, sizeof(int));
+	Logger::address ("Glow relative ptr:\t", addressOfGlowPointerOffset);
+	
+	csgo.m_addressOfGlowPointer = glowFunctionCall + 0x10 + addressOfGlowPointerOffset + 0x4;
+	Logger::address ("GlowObjMan pointer:\t", csgo.m_addressOfGlowPointer);
 
 	unsigned long foundLocalPlayerLea = (long)client.find(csgo,
 		"\x48\x89\xe5\x74\x0e\x48\x8d\x05\x00\x00\x00\x00", //27/06/16
 		"xxxxxxxx????");
 
 	csgo.m_addressOfLocalPlayer = csgo.GetCallAddress((void*)(foundLocalPlayerLea+0x7));
+	Logger::address ("LocalPlayer address:\t", csgo.m_addressOfLocalPlayer);
 
 	unsigned long foundAttackMov = (long)client.find(csgo,
 		"\x44\x89\xe8\x83\xe0\x01\xf7\xd8\x83\xe8\x03\x45\x84\xe4\x74\x00\x21\xd0", //10/07/16
@@ -183,7 +186,7 @@ int main() {
 		"xxxxxxxxxxxxxxxx?xx");
 
 	csgo.m_addressOfAlt1 = csgo.GetCallAddress((void*)(foundAlt1Mov+20));
-	Logger::address ("LocalPlayer address:\t", csgo.m_addressOfLocalPlayer);
+	Logger::address ("alt1 address:\t\t", csgo.m_addressOfAlt1);	
 
 	/*
 		0x7f114cc6f414:	 and	eax,edx
