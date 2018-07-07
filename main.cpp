@@ -161,12 +161,8 @@ int main() {
 
 	unsigned long glowFunctionCall = csgo.GetCallAddress(foundGlowPointerCall);
 	Logger::address ("Glow function call:\t", glowFunctionCall);
-
-	int addressOfGlowPointerOffset;
-	csgo.Read((void*) (glowFunctionCall + 0x10), &addressOfGlowPointerOffset, sizeof(int));
-	Logger::address ("Glow relative ptr:\t", addressOfGlowPointerOffset);
 	
-	csgo.m_addressOfGlowPointer = glowFunctionCall + 0x10 + addressOfGlowPointerOffset + 0x4;
+	csgo.m_addressOfGlowPointer = csgo.GetAbsoluteAddress((void*)(glowFunctionCall + 9), 3, 7);
 	Logger::address ("GlowObjMan pointer:\t", csgo.m_addressOfGlowPointer);
 
 	unsigned long foundLocalPlayerLea = (long)client.find(csgo,
@@ -177,32 +173,19 @@ int main() {
 	Logger::address ("LocalPlayer address:\t", csgo.m_addressOfLocalPlayer);
 
 	unsigned long foundAttackMov = (long)client.find(csgo,
-		"\x44\x89\xe8\x83\xe0\x01\xf7\xd8\x83\xe8\x03\x45\x84\xe4\x74\x00\x21\xd0", //10/07/16
-		"xxxxxxxxxxxxxxx?xx");
-	csgo.m_addressOfForceAttack = csgo.GetCallAddress((void*)(foundAttackMov+19));
+		"\x89\xD8\x83\xC8\x01\xF6\xC2\x03\x0F\x45\xD8\x44\x89\x00\x83\xE0\x01\xF7\xD8\x83\xE8\x03", // 2018-07-07
+		"xxxxxxxxxxxxx?xxxxxxxx");
+	csgo.m_addressOfForceAttack = csgo.GetAbsoluteAddress((void*)(foundAttackMov - 7), 3, 7);
+
 
 	unsigned long foundAlt1Mov = (long)client.find(csgo,
-		"\x44\x89\xe8\xc1\xe0\x11\xc1\xf8\x1f\x83\xe8\x03\x45\x84\xe4\x74\x00\x21\xd0", //10/07/16
-		"xxxxxxxxxxxxxxxx?xx");
+		"\x89\xD8\x80\xCC\x40\xF6\xC2\x03\x0F\x45\xD8\x44\x89\x00\xC1\xE0\x11\xC1\xF8\x1F\x83\xE8\x03", // 2018-07-07
+		"xxxxxxxxxxxxx?xxxxxxxxx");
 
-	csgo.m_addressOfAlt1 = csgo.GetCallAddress((void*)(foundAlt1Mov+20));
+	csgo.m_addressOfAlt1 = csgo.GetAbsoluteAddress((void*)(foundAlt1Mov - 7), 3, 7);
 	Logger::address ("alt1 address:\t\t", csgo.m_addressOfAlt1);	
 
-	/*
-		0x7f114cc6f414:	 and	eax,edx
-		0x7f114cc6f416:	 mov	DWORD PTR [rip+0x55d10f0],eax		 # 0x7f115224050c
-		0x7f114cc6f41c:	 mov	edx,DWORD PTR [rip+0x55d10de]		 # 0x7f1152240500
-	=>	0x7f114cc6f422:	 mov	eax,ebx
-		0x7f114cc6f424:	 or	eax,0x2
-		0x7f114cc6f427:	 test	dl,0x3
-		0x7f114cc6f42a:	 cmovne ebx,eax
-		0x7f114cc6f42d:	 mov	eax,r13d
-	*/
-	unsigned long foundForceJumpMov = (long)client.find(csgo,
-		"\x44\x89\xe8\xc1\xe0\x1d\xc1\xf8\x1f\x83\xe8\x03\x45\x84\xe4\x74\x08\x21\xd0", //01/09/16
-		"xxxxxxxxxxxxxxxx?xx");
-
-	csgo.m_oAddressOfForceJump = csgo.GetCallAddress((void*)(foundForceJumpMov+26));
+	csgo.m_oAddressOfForceJump = csgo.m_addressOfAlt1 + 0xC * 5;
 	Logger::address ("Force Jump:\t\t", csgo.m_oAddressOfForceJump);
 
 	csgo.m_bShouldGlow = true;

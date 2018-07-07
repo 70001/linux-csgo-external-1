@@ -81,6 +81,7 @@ namespace remote {
 		bool Read(void* address, void* buffer, size_t size);
 
 		unsigned long GetCallAddress(void* address);
+		unsigned long GetAbsoluteAddress(void* address, int offset, int size);
 
 		MapModuleMemoryRegion* GetRegionOfAddress(void* address);
 
