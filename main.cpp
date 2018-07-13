@@ -104,6 +104,7 @@ int main() {
 	};
 
 	remote::Handle csgo;
+	bool panorama = false;
 
 	while (true) {
 		if (remote::FindProcessByName("csgo_linux64", &csgo))
@@ -133,8 +134,19 @@ int main() {
 
 		for (auto region : csgo.regions) {
 			if (region.filename.compare("client_client.so") == 0 && region.executable) {
+				panorama = false;
 				client = region;
 				break;
+			}
+		}
+
+		if (client.start == 0) {
+			for (auto region : csgo.regions) {
+				if (region.filename.compare("client_panorama_client.so") == 0 && region.executable) {
+					panorama = true;
+					client = region;
+					break;
+				}
 			}
 		}
 
@@ -155,9 +167,16 @@ int main() {
 	Logger::address ("client_client.so:\t", client.start);
 	Logger::address ("engine_client.so:\t", pEngine);
 
-	void* foundGlowPointerCall = client.find(csgo,
-		"\xE8\x00\x00\x00\x00\x48\x8b\x3d\x00\x00\x00\x00\xBE\x01\x00\x00\x00\xC7", // 2016-10-08
-		"x????xxx????xxxxxx");
+	void* foundGlowPointerCall;
+	if (panorama) {
+		foundGlowPointerCall = client.find(csgo,
+					"\xE8\x00\x00\x00\x00\x49\x8B\x7D\x00\xC7\x40\x38\x00\x00\x00\x00\x48\x8B\x07\xFF\x90", // 2018-07-13
+					"x????xxxxxxxxxxxxxxxx");
+	} else {
+		foundGlowPointerCall = client.find(csgo,
+					"\xE8\x00\x00\x00\x00\x48\x8b\x3d\x00\x00\x00\x00\xBE\x01\x00\x00\x00\xC7", // 2018-07-07
+					"x????xxx????xxxxxx");
+	}
 
 	unsigned long glowFunctionCall = csgo.GetCallAddress(foundGlowPointerCall);
 	Logger::address ("Glow function call:\t", glowFunctionCall);
