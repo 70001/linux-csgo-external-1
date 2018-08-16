@@ -97,7 +97,7 @@ void hack::Glow(double colors[12], remote::Handle* csgo, remote::MapModuleMemory
 						unsigned int entityId = 0;
 						unsigned int attack = 0x5;
 						unsigned int release = 0x4;
-						csgo->Read((void*) (localPlayer+0xBBD0), &crossHairId, sizeof(int));
+						csgo->Read((void*) (localPlayer+0xBBE0), &crossHairId, sizeof(int));
 						csgo->Read((void*) ((uint8_t*)g_glow[i].m_pEntity + 0x94), &entityId, sizeof(int));
 
 						unsigned int iAlt1Status = 0 ;
