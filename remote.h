@@ -56,6 +56,7 @@ namespace remote {
 	unsigned long m_oAddressOfForceJump;
 	unsigned long m_addressOfAlt1;
 	unsigned long m_addressOfOnGround;
+	unsigned long m_inCrossOffset;
 
 	unsigned long a_engine_client;
 

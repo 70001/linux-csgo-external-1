@@ -59,9 +59,9 @@ int main() {
 	cout << BOLD RED << "█ AUTHOR: " UNDERLINE WHITE "\ts0beit" RESET << endl;
 	cout << BOLD YELLOW << "█ MAINTAINER:" UNDERLINE WHITE "\tMcSwaggens" RESET << endl;
 	cout << BOLD GREEN << "█ MAINTAINER:" UNDERLINE WHITE "\towerosu" RESET << endl;
-	cout << BOLD CYAN << "█ PROGRAMMER:" UNDERLINE WHITE "\tluk1337" RESET << endl;
-	cout << BOLD BLUE << "█ HELP: " UNDERLINE WHITE "\tCommunity" RESET << endl;
-	cout << BOLD MAGENTA << "█ Github:" UNDERLINE WHITE "\thttps://github.com/McSwaggens/linux-csgo-external" RESET << endl;
+	cout << BOLD CYAN << "█ MAINTAINER:" UNDERLINE WHITE "\tericek111" RESET << endl;
+	cout << BOLD BLUE << "█ PROGRAMMER:" UNDERLINE WHITE "\tluk1337" RESET << endl;
+	cout << BOLD MAGENTA << "█ GitHub:" UNDERLINE WHITE "\thttps://github.com/McSwaggens/linux-csgo-external" RESET << endl;
 	cout << UNDERLINE "                                                   " RESET << endl;
 	cout << UNDERLINE "---------------[linux-csgo-external]---------------\n" RESET << endl;
 
@@ -188,6 +188,13 @@ int main() {
 
 	csgo.m_oAddressOfForceJump = csgo.m_addressOfAlt1 + 0xC * 5;
 	Logger::address ("Force Jump:\t\t", csgo.m_oAddressOfForceJump);
+
+	unsigned long inCrossMov = (long)client.find(csgo,
+		"\x31\xC0\x0F\x2F\x83\x00\x00\x00\x00\x76\x14\x8B\x83\x00\x00\x00\x00\x85\xC0\x75\x0A\x8B\x93", // 2018-11-10
+		"xxxxx????xxxx????xxxxxx");
+
+	csgo.Read((void*) (inCrossMov + 13), &csgo.m_inCrossOffset, sizeof(int));
+	Logger::address ("inCross offset:\t\t", csgo.m_inCrossOffset);
 
 	csgo.m_bShouldGlow = true;
 	csgo.m_bShouldNoFlash = true;
