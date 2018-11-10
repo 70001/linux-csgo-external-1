@@ -104,7 +104,6 @@ int main() {
 	};
 
 	remote::Handle csgo;
-	bool panorama = false;
 
 	while (true) {
 		if (remote::FindProcessByName("csgo_linux64", &csgo))
@@ -133,20 +132,9 @@ int main() {
 		csgo.ParseMaps();
 
 		for (auto region : csgo.regions) {
-			if (region.filename.compare("client_client.so") == 0 && region.executable) {
-				panorama = false;
+			if (region.filename.compare("client_panorama_client.so") == 0 && region.executable) {
 				client = region;
 				break;
-			}
-		}
-
-		if (client.start == 0) {
-			for (auto region : csgo.regions) {
-				if (region.filename.compare("client_panorama_client.so") == 0 && region.executable) {
-					panorama = true;
-					client = region;
-					break;
-				}
 			}
 		}
 
@@ -168,15 +156,9 @@ int main() {
 	Logger::address ("engine_client.so:\t", pEngine);
 
 	void* foundGlowPointerCall;
-	if (panorama) {
-		foundGlowPointerCall = client.find(csgo,
-					"\xE8\x00\x00\x00\x00\x49\x8B\x7D\x00\xC7\x40\x38\x00\x00\x00\x00\x48\x8B\x07\xFF\x90", // 2018-07-13
-					"x????xxxxxxxxxxxxxxxx");
-	} else {
-		foundGlowPointerCall = client.find(csgo,
-					"\xE8\x00\x00\x00\x00\x48\x8b\x3d\x00\x00\x00\x00\xBE\x01\x00\x00\x00\xC7", // 2018-07-07
-					"x????xxx????xxxxxx");
-	}
+	foundGlowPointerCall = client.find(csgo,
+				"\xE8\x00\x00\x00\x00\x49\x8B\x7D\x00\xC7\x40\x38\x00\x00\x00\x00\x48\x8B\x07\xFF\x90", // 2018-07-13
+				"x????xxxxxxxxxxxxxxxx");
 
 	unsigned long glowFunctionCall = csgo.GetCallAddress(foundGlowPointerCall);
 	Logger::address ("Glow function call:\t", glowFunctionCall);
@@ -195,7 +177,7 @@ int main() {
 		"\x89\xD8\x83\xC8\x01\xF6\xC2\x03\x0F\x45\xD8\x44\x89\x00\x83\xE0\x01\xF7\xD8\x83\xE8\x03", // 2018-07-07
 		"xxxxxxxxxxxxx?xxxxxxxx");
 	csgo.m_addressOfForceAttack = csgo.GetAbsoluteAddress((void*)(foundAttackMov - 7), 3, 7);
-
+	Logger::address ("Force Attack:\t\t", csgo.m_addressOfForceAttack);
 
 	unsigned long foundAlt1Mov = (long)client.find(csgo,
 		"\x89\xD8\x80\xCC\x40\xF6\xC2\x03\x0F\x45\xD8\x44\x89\x00\xC1\xE0\x11\xC1\xF8\x1F\x83\xE8\x03", // 2018-07-07
