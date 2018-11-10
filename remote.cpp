@@ -1,6 +1,6 @@
 #include "remote.h"
 
-#define FINDPATTERN_CHUNKSIZE 0x1000
+#define FINDPATTERN_CHUNKSIZE 0x2000
 
 namespace remote {
 	// Map Module
@@ -11,6 +11,9 @@ namespace remote {
 		size_t chunksize = sizeof(buffer);
 		size_t totalsize = this->end - this->start;
 		size_t chunknum = 0;
+		size_t matches = 0;
+		size_t bufpos = 0;
+
 
 		while (totalsize) {
 			size_t readsize = (totalsize < chunksize) ? totalsize : chunksize;
@@ -20,23 +23,17 @@ namespace remote {
 
 			if (handle.Read((void*) readaddr, buffer, readsize)) {
 				for (size_t b = 0; b < readsize; b++) {
-					size_t matches = 0;
-
-					while (buffer[b + matches] == data[matches] || pattern[matches] != 'x') {
+					while (1) {
+						if (buffer[b + bufpos] != data[matches] && pattern[matches] == 'x') {
+							matches = 0;
+							bufpos = 0;
+							break;
+						}
+						
+						bufpos++;
 						matches++;
 
 						if (matches == len) {
-							/*
-							printf("Debug Output:\n");
-							for (int i = 0; i < readsize-b; i++)
-							{
-								if (i != 0 && i % 8 == 0) {
-									printf("\n");
-								}
-								printf("%02x ",(unsigned char)buffer[b+i]);
-							}
-							printf("\n");
-							*/
 							return (char*) (readaddr + b);
 						}
 					}
@@ -44,6 +41,7 @@ namespace remote {
 			}
 
 			totalsize -= readsize;
+			bufpos = 0;
 			chunknum++;
 		}
 
