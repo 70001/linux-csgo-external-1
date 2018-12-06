@@ -197,8 +197,8 @@ int main() {
 	Logger::address ("inCross offset:\t\t", csgo.m_inCrossOffset);
 
 	csgo.m_bShouldGlow = true;
-	csgo.m_bShouldNoFlash = true;
-	csgo.m_bBhopEnabled = true;
+	csgo.m_bShouldNoFlash = false;
+	csgo.m_bBhopEnabled = false;
 	csgo.m_bShouldBHop = false;
 
 	char keys[32];
@@ -241,7 +241,7 @@ int main() {
 
 		try {
 			hack::Glow(colors, &csgo, &client);
-			hack::Bhop(&csgo, &client, display);
+			/* hack::Bhop(&csgo, &client, display); */
 		} catch (int exception) {
 			Logger::error("An error occurred, closing...");
 			break;
